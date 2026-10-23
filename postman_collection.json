@@ -1,0 +1,389 @@
+{
+  "info": {
+    "name": "ClaimGuard Fraud Detection API",
+    "_postman_id": "c1a134a4-5690-4c33-87a2-f38b45a80f01",
+    "description": "Postman API test suite for ClaimGuard - Benefits Claims Fraud Detection System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login as Reviewer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"authToken\", jsonData.token);",
+                  "pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Token is returned\", function () { pm.expect(jsonData.token).to.be.a('string'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"reviewer1\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"authToken\", jsonData.token);",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Claims Management",
+      "item": [
+        {
+          "name": "List Claims (Filtered & Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims?page=0&size=10&sortBy=createdAt&sortDir=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortDir", "value": "desc" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Claims by Status and Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims?status=FLAGGED&category=HEALTHCARE",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims"],
+              "query": [
+                { "key": "status", "value": "FLAGGED" },
+                { "key": "category", "value": "HEALTHCARE" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create New Benefit Claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"claimantId\": \"CLMT-90050\",\n  \"category\": \"HEALTHCARE\",\n  \"amount\": 6850.00,\n  \"submissionDate\": \"2026-10-24\",\n  \"description\": \"Inpatient surgical procedure exceeding standard threshold\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/claims",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims"]
+            }
+          }
+        },
+        {
+          "name": "Get Claim Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Claim Info",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"HEALTHCARE\",\n  \"amount\": 1350.00,\n  \"description\": \"Amended itemized doctor consultation fee\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/claims/6",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "6"]
+            }
+          }
+        },
+        {
+          "name": "Get Claim Status History Timeline",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims/1/history",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "1", "history"]
+            }
+          }
+        },
+        {
+          "name": "Get Claim Risk Assessment Dossier",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims/22/risk-assessment",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "22", "risk-assessment"]
+            }
+          }
+        },
+        {
+          "name": "Re-Analyze Claim Risk",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/claims/22/analyze",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "22", "analyze"]
+            }
+          }
+        },
+        {
+          "name": "Transition Claim Status (Workflow Service)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"toStatus\": \"UNDER_REVIEW\",\n  \"reason\": \"Assigned to senior medical billing specialist for hospital credential check\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/claims/6/status-transitions",
+              "host": ["{{baseUrl}}"],
+              "path": ["claims", "6", "status-transitions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Dashboard Analytics",
+      "item": [
+        {
+          "name": "Get Summary Aggregates",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Get Claims by Status Grouping",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/claims-by-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "claims-by-status"]
+            }
+          }
+        },
+        {
+          "name": "Get Risk Level Distribution",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/risk-distribution",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "risk-distribution"]
+            }
+          }
+        },
+        {
+          "name": "Get Recent Claims Feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/recent-claims?limit=8",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "recent-claims"],
+              "query": [{ "key": "limit", "value": "8" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. User Management (Admin Only)",
+      "item": [
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Provision New User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"reviewer3\",\n  \"password\": \"password123\",\n  \"fullName\": \"Alex Chen (Claims Analyst)\",\n  \"role\": \"CLAIMS_REVIEWER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Toggle User Status (Activate/Deactivate)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/2/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "2", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

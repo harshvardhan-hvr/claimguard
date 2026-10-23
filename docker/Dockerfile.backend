@@ -1,0 +1,26 @@
+# Build Stage
+FROM eclipse-temurin:21-jdk-alpine AS builder
+WORKDIR /app
+
+# Copy Maven wrapper & POM
+COPY pom.xml .
+COPY src ./src
+
+# Install maven & package JAR without tests
+RUN apk add --no-cache maven && \
+    mvn clean package -DskipTests
+
+# Runtime Stage
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Create unprivileged application user
+RUN addgroup -S claimguard && adduser -S claimguard -G claimguard
+USER claimguard
+
+COPY --from=builder /app/target/claimguard-backend-1.0.0.jar app.jar
+
+EXPOSE 8080
+
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

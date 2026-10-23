@@ -1,0 +1,49 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: claimguard-backend
+  profiles:
+    default: dev
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration-ms: 86400000 # 24 hours
+
+risk-engine:
+  thresholds:
+    HEALTHCARE: 5000.00
+    UNEMPLOYMENT: 2500.00
+    DISABILITY: 7500.00
+    HOUSING: 4000.00
+    CHILDCARE: 3000.00
+  scoring:
+    low-max: 29
+    medium-max: 69
+    category-threshold-score: 35
+    claimant-velocity-score: 30
+    duplicate-claim-score: 40
+    rapid-submission-score: 25
+  velocity:
+    lookback-days: 30
+    max-allowed-claims: 2
+    rapid-submission-hours: 48
