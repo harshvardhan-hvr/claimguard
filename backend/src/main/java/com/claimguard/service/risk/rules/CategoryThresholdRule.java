@@ -20,7 +20,7 @@ public class CategoryThresholdRule implements RiskRule {
     public static final String RULE_NAME = "Category Threshold Exceeded";
 
     private final RiskEngineConfig config;
-    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.of("en", "IN"));
 
     public CategoryThresholdRule(RiskEngineConfig config) {
         this.config = config;

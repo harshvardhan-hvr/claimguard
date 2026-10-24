@@ -23,7 +23,7 @@ public class DuplicateClaimRule implements RiskRule {
     public static final String RULE_NAME = "Potential Duplicate Claim Submission";
 
     private final RiskEngineConfig config;
-    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+    private final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.of("en", "IN"));
 
     public DuplicateClaimRule(RiskEngineConfig config) {
         this.config = config;

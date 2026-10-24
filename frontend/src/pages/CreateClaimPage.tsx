@@ -124,7 +124,7 @@ export const CreateClaimPage: React.FC = () => {
                 Claim Amount & Category
               </span>
               <div className="text-sm font-semibold text-slate-800 mt-1">
-                ${submittedClaim.amount.toFixed(2)} • {submittedClaim.category}
+                ₹{submittedClaim.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} • {submittedClaim.category}
               </div>
               <span className="text-xs text-slate-500 font-mono">Claimant: {submittedClaim.claimantId}</span>
             </div>
@@ -236,18 +236,18 @@ export const CreateClaimPage: React.FC = () => {
                   onChange={(e) => setCategory(e.target.value as BenefitCategory)}
                   className="input-field text-xs"
                 >
-                  <option value="HEALTHCARE">Healthcare (Limit: $5,000)</option>
-                  <option value="UNEMPLOYMENT">Unemployment (Limit: $2,500)</option>
-                  <option value="DISABILITY">Disability (Limit: $7,500)</option>
-                  <option value="HOUSING">Housing (Limit: $4,000)</option>
-                  <option value="CHILDCARE">Childcare (Limit: $3,000)</option>
+                  <option value="HEALTHCARE">Healthcare (Limit: ₹5,000)</option>
+                  <option value="UNEMPLOYMENT">Unemployment (Limit: ₹2,500)</option>
+                  <option value="DISABILITY">Disability (Limit: ₹7,500)</option>
+                  <option value="HOUSING">Housing (Limit: ₹4,000)</option>
+                  <option value="CHILDCARE">Childcare (Limit: ₹3,000)</option>
                 </select>
               </div>
 
               {/* Amount */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Claim Amount ($ USD) *
+                  Claim Amount (₹ INR) *
                 </label>
                 <input
                   type="number"

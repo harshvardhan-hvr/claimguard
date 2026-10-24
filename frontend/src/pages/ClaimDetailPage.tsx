@@ -90,9 +90,9 @@ export const ClaimDetailPage: React.FC = () => {
   };
 
   const formatCurrency = (val?: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(val || 0);
   };
 
@@ -388,7 +388,7 @@ export const ClaimDetailPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Claim Amount ($)</label>
+                <label className="block font-semibold text-slate-700 mb-1">Claim Amount (₹)</label>
                 <input
                   type="number"
                   step="0.01"

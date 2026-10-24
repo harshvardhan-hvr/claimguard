@@ -109,9 +109,9 @@ export const InvestigationPage: React.FC = () => {
   };
 
   const formatCurrency = (val?: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(val || 0);
   };
 

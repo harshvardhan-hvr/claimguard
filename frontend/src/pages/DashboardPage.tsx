@@ -61,11 +61,11 @@ export const DashboardPage: React.FC = () => {
     fetchDashboardData();
   }, []);
 
-  // Format currency
+  // Format currency in Indian Rupees
   const formatCurrency = (val?: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       maximumFractionDigits: 0,
     }).format(val || 0);
   };
